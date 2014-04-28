@@ -177,14 +177,7 @@ Compiler.prototype.compileTemplates = function(files) {
   }
 
   // Defining encodeHTML method for the templates
-  js += 'function encodeHTMLSource() {';
-  js += '  var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", \'"\': \'&#34;\', "\'": \'&#39;\', "/": \'&#47;\' },';
-  js += '  matchHTML = /&(?!#?\w+;)|<|>|"|\'|\\//g;';
-  js += '  return function() {';
-  js += '    return this ? this.replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : this;';
-  js += '  };';
-  js += '};';
-  js += 'String.prototype.encodeHTML=encodeHTMLSource();';
+  js += 'function e() {var r={"&":"&#38;","<":"&#60;",">":"&#62;",\'"\':\'&#34;\',"\'":\'&#39;\',"/":\'&#47;\'}, reg = /&(?!#?\w+;)|<|>|"|\'|\\//g;return function() {return this ? this.replace(reg, function(m) {return r[m] || m;}) : this;};};String.prototype.encodeHTML=e();';
 
   js += 'var ' + variable + ' = {};';
 
