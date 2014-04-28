@@ -154,14 +154,15 @@ Compiler.prototype.getFileContent = function(filePath) {
 Compiler.prototype.compileTemplates = function(files) {
 
   var js = '', _this = this, templateSettings = this.opt.templateSettings || undefined,
-    define = this.opt.namespace ? this.opt.namespace + '.define' : 'define';
+    define = this.opt.namespace ? this.opt.namespace + '.define' : 'define',
+    variable = this.opt.variable;
 
   // RequireJS
   if(!this.opt.requirejs && !this.opt.node) {
-    if(this.opt.variable.indexOf('.') !== -1) {
-      js += this.opt.variable + ' = (function(){' + grunt.util.linefeed;
+    if(variable.indexOf('.') !== -1) {
+      js += variable + ' = (function(){' + grunt.util.linefeed;
     } else {
-      js += 'var ' + this.opt.variable + ' = (function(){' + grunt.util.linefeed;
+      js += 'var ' + variable + ' = (function(){' + grunt.util.linefeed;
     }
   }
 
@@ -182,26 +183,26 @@ Compiler.prototype.compileTemplates = function(files) {
   js += '  return function() {';
   js += '    return this ? this.replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : this;';
   js += '  };';
-  js += '};' + grunt.util.linefeed;
-  js += 'String.prototype.encodeHTML=encodeHTMLSource();' + grunt.util.linefeed;
+  js += '};';
+  js += 'String.prototype.encodeHTML=encodeHTMLSource();';
 
-  js += 'var tmpl = {};' + grunt.util.linefeed;
+  js += 'var ' + variable + ' = {};';
 
   files.map(function(filePath) {
     var template = _this.getFileContent(filePath)
       , fn       = doT.template(template, templateSettings)
       , key      = _this.opt.key(filePath);
-    js += '  tmpl' + "['" + key + "']=" + fn + ';' + grunt.util.linefeed;
+    js += variable + "['" + key + "']=" + fn + ';';
   });
 
   if(!this.opt.requirejs && !this.opt.node) {
-    js += 'return tmpl;})();';
+    js += 'return ' + variable + ';})();';
   } else if(this.opt.requirejs) {
-    js += 'return tmpl;});' + grunt.util.linefeed;
+    js += 'return ' + variable + ';});';
   } else if(this.opt.simple && this.opt.node){
     js += '';
   } else if(this.opt.node) {
-    js += 'module.exports = tmpl;';
+    js += 'module.exports = ' + variable + ';';
   }
 
   return js;
