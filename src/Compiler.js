@@ -152,8 +152,8 @@ Compiler.prototype.getFileContent = function(filePath) {
 
 Compiler.prototype.compileTemplates = function(files) {
 
-  var js = '', _this = this;
-  
+  var js = '', _this = this, templateSettings = this.opt.templateSettings || undefined,
+    define = this.opt.namespace ? this.opt.namespace + '.define' : 'define';
 
   // RequireJS
   if(!this.opt.requirejs && !this.opt.node) {
@@ -171,7 +171,7 @@ Compiler.prototype.compileTemplates = function(files) {
   }
 
   if(this.opt.requirejs) {
-    js += 'define(function() {' + grunt.util.linefeed;
+    js += define + '(function() {';
   }
 
   // Defining encodeHTML method for the templates
@@ -188,7 +188,7 @@ Compiler.prototype.compileTemplates = function(files) {
 
   files.map(function(filePath) {
     var template = _this.getFileContent(filePath)
-      , fn       = doT.template(template)
+      , fn       = doT.template(template, templateSettings)
       , key      = _this.opt.key(filePath);
     js += '  tmpl' + "['" + key + "']=" + fn + ';' + grunt.util.linefeed;
   });
