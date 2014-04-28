@@ -16,6 +16,7 @@ var Compiler = function(opt) {
   this.opt = _.defaults(opt || {}, {
     variable  : 'tmpl',
     node      : false,
+    namespace : false,
     root      : opt.gruntRoot,
     requirejs : false,
     key       : function(filepath) {
